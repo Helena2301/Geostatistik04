@@ -85,11 +85,22 @@ SPDFljz <- SpatialPointsDataFrame(spatialCoords,
                                   proj4string = coordRefSys)
 
 #graphische Darstellung
+grid <- gridlines(SPDFljz, 
+                  easts = pretty(bbox(SPDFljz)[1,]), 
+                  norths = pretty(bbox(SPDFljz)[2,]))
+                
+
 plot(SPDFljz,
      main = "Orte der Probenentnahme in Yingtan",
      axes = TRUE,
+     pch = ".",
+     cex = 3,
      xlab = "EAST",
-     ylab = "NORTH")
+     ylab = "NORTH",
+     xlim = c(490000, 494000))
+plot(grid, 
+     col = "grey",
+     add = TRUE)
 
 #Distanzen abschaetzen
 bbox(SPDFljz)
@@ -109,9 +120,9 @@ Hinweis: Um das richtige Satellitenbild zu finden, muss dem Objekt ljz das richt
 
 ```{r Aufgabe 11b}
 library(mapview)
-print(mapview(SPDFljz))
+print(mapview(SPDFljz, map.type ="Esri.WorldImagery"))
 ```
-Das Beprobungsgebiet wird offensichtlich von einer Autobahn oder größeren Straße durchquert. Einige Standorte der Probenentnahmestellen liegen sehr nah an der Fahrbahn. Das kann die chemische Zusammensetzung beeinflussen und so das Ergebnis für das Untersuchungsgebiet beeinflussen.
+Das Beprobungsgebiet wird offensichtlich von einer Autobahn oder größeren Straße durchquert. Einige Standorte der Probenentnahmestellen liegen sehr nah an der Fahrbahn. Das kann die chemische Zusammensetzung beeinflussen und so das Ergebnis für das Untersuchungsgebiet beeinflussen. Lücken in den Beprobungsstellen sind durch Gewässer oder Siedlungen zu erklären. Neben dem regulären regelmäßigen Beprobungsmuster gibt es vier Bereiche, die entlang von Catenen intensiver beprobt wurden (s. Spalte SAMPLING). Hierbei ist nicht zu erkennen, ob diese speziellen "Areas-of-Interests" zufällig oder durch eine bestimmte Sampling-Strategie gewählt wurden.
 
 c) Erstellen Sie mit Hilfe der Methode bubble einen Plot, der Ihnen zusätzlich zur geographischen Position jeweils die Größenordnung des Ca-Gehalts (untransformiert) vermittelt. Setzen Sie die maximale Kreisstärke auf 1 und sorgen Sie dafür, dass die Koordinatenachsen geplottet werden. Gehen Sie der Frage nach, ob ein regionaler Trend auszumachen ist. Liegen die Extremwerte konzentriert vor, oder verteilen sie sich auf das gesamte Einzugsgebiet?
 ```{r Aufgabe 11c}
