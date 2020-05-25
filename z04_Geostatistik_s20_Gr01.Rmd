@@ -133,4 +133,4 @@ bubble(SPDFljz, "Ca_exch",
        scales = list(draw = TRUE),
        maxsize = 1)
 ```
-Die Proben, die nah an Bahngleisen entnommen wurden, weisen eine höhere Konzentration an austauschbaren Ca-Ionen auf. Darüber hinaus ist sie im Osten des Beprobungsgebiets etwas höher als im Westen. Ein klarer Unterschied in Nord-Süd-Richtung ist nicht zu erkennen.
+Die Proben, die nah an Bahngleisen entnommen wurden, weisen eine höhere Konzentration an austauschbaren Ca-Ionen auf. Darüber hinaus ist sie im Osten, besonders östlich der zentralen Catena, des Beprobungsgebiets etwas höher als im Westen. Ein klarer Unterschied in Nord-Süd-Richtung ist nicht zu erkennen.
