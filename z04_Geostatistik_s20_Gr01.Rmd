@@ -93,8 +93,16 @@ plot(SPDFljz,
 
 #Distanzen abschaetzen
 bbox(SPDFljz)
+
+ptsdist <- dist(coordinates(SPDFljz))
+hist(ptsdist,
+     main = "Histogramm der Abstände der Beprobungsstellen",
+     xlab = "Entfernung zwischen den Beprobungspunkten",
+     ylab = "Häufigkeit")
+max(ptsdist)
 ```
-Größtenteils wurde die Fläche gleichmäßig beprobt. An einigen Stellen allerdings gar nicht und an anderen liegen die beprobten Stellen sehr nah bei einander. Die maximale Distanz der beprobten Stellen beträgt
+Größtenteils wurde die Fläche gleichmäßig beprobt. An einigen Stellen allerdings gar nicht und an anderen liegen die beprobten Stellen sehr nah bei einander. Das Untersuchungsgebiet liegt zwischen 490441 und 492591 für die Rechtswerte und zwischen 3121290 und 3125630 für die Hochwerte.
+Die maximale Distanz der beprobten Stellen beträgt etwa 4400m.
 
 b) Verschaffen Sie sich anschließend einen Überblick über die Lage der Punkte indem Sie diese vor einem Satellitenbild plotten (mapview). Lassen sich durch das Satellitenbild weitere Äußerungen über das Sampling-Design treffen?
 Hinweis: Um das richtige Satellitenbild zu finden, muss dem Objekt ljz das richtige Koordinatensystem zugewiesen werden. Denken Sie dazu an die Objektbeschreibung in Übung 2.
