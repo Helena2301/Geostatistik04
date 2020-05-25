@@ -70,10 +70,10 @@ legend(7, 0.35,
        col = c("black", "black", "red"),
        lty = c(1,2,2))
 ```
-Der p-Wert ist nach wie vor <0,05, allerdings deutlich dichter dran als vor der Transformierung.
-Der W-Wert ist, wie auch schon vor der Transformierung, ideralerweise nahe 1.
-
 c) Beurteilen Sie abschließend in knappen Worten, ob die Transformation erfolgreich war, oder ob sich keine entscheidende Annäherung an eine Normalverteilung herstellen ließ.
+
+Der p-Wert ist mit 0.0002949 nach wie vor <0,05, allerdings deutlich dichter dran als vor der Transformierung (2.914e-13).
+Der W-Wert ist mit 0.98, wie auch schon vor der Transformierung (0.91), ideralerweise nahe 1.
 
 ## Aufgabe 11 Räumliche Daten in R
 a) Überführen Sie das Objekt ljz in eines der Klasse SpatialPointsDataFrame. Plotten Sie nun die Daten entsprechend ihrer geographischen Position. Beschriften Sie geschickt und fügen Sie ihrer Graphik ein rechtwinkliges Grid hinzu. Was lässt sich über das Sampling-Design sagen? Schätzen Sie die maximale Entfernung zweier Punkte im Untersuchungsgebiet ab.
@@ -98,14 +98,14 @@ grid <- gridlines(SPDFljz,
                   easts = pretty(bbox(SPDFljz)[1,]), 
                   norths = pretty(bbox(SPDFljz)[2,]))
 
+
 plot(SPDFljz,
      main = "Orte der Probenentnahme in Yingtan",
      axes = TRUE,
      pch = ".",
      cex = 3,
      xlab = "EAST",
-     ylab = "NORTH",
-     xlim = c(490000, 494000))
+     ylab = "NORTH")
 plot(grid, 
      col = "grey",
      add = TRUE)
