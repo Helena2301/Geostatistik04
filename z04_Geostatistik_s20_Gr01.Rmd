@@ -12,59 +12,68 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r Workspace}
 #Workspace laden
 load("data/yingtan_20_ueb3.RData")
-
-#Die folgenden Rechnungen beziehen sich auf die austauschbaren Ca-Ionen
-Ca <- ljz$Ca_exch
 ```
 ## Aufgabe 10
 a)Um den visuellen Eindruck aus Aufgabe 8b. mathematisch zu bestätigen, untersuchen Sie die Variable Ca_exch mit Hilfe eines gängigen Testverfahrens auf Normalverteilung.
 ```{r Aufgabe 10a}
 #Test auf Normalverteilung mit dem Shaphiro-Wilk-Test
-shapiro.test(Ca)
+shapiro.test(ljz$Ca_exch)
 ```
 Der p-Wert ist < 0,05. Das bedeutet, dass eine Normalverteilung der Messwerte der austauschbaren Ca-Ionen unwahrscheinlich ist.
 
 b) Führen Sie eine geeignete Transformation durch und plotten Sie das Dichte-Histogramm der transformierten Variablen. Wiederholen Sie den in 10a. verwendeten Test auf Normalverteilung und integrieren Sie die Testparameter ebenso in die Histogramm-Graphik wie die Kurve der zugehörigen Normalverteilung (curve und Normal). Wählen Sie eine gestrichelte Liniendarstellung doppelter Breite.
 ```{r Aufgabe 10b}
-#Schiefe
-schiefe <- function(x) {
-  1/(length(x) * (sqrt(var(x))^3)) * sum((x-mean(x))^3)
-}
+ljz_sqrt <- ljz
+ljz_log10<- ljz
+ljz_log <- ljz
 
-schiefe(Ca)
+#Transformation
+ljz_sqrt$Ca_exch <- sqrt(ljz_sqrt$Ca_exch)
+ljz_log10$Ca_exch <- log10(ljz_log10$Ca_exch)
+ljz_log$Ca_exch <- log(ljz_log$Ca_exch)
 
-#Variable transformieren mittels Wurzel
-Ca_tr <- log(Ca)
-#Dichte-Histogramm
-hist(Ca_tr,
-     breaks = "FD")
 #Test auf Normalverteilung
-shapiro.test(Ca_tr)
+shapiro.test(ljz_sqrt$Ca_exch)
+shapiro.test(ljz_log10$Ca_exch)
+shapiro.test(ljz_log$Ca_exch)
+
+#Histogram
+myhist <- hist(ljz_sqrt$Ca_exch, 
+               breaks="FD", #Bin-Weite nach Freedman-Diaconis
+               freq=FALSE, #Wahrscheinlichkeitsdichte statt Häufigkeit, alternative prob=TRUE
+               col="grey",
+               main="Dichte-Histogramm der transformierten austauschbaren Ca-Ionen", 
+               xlab="Transformierte austauschbare Ca-Ionen", 
+               ylab="Dichte",
+               las=1)
+
+#Dichte als Funktion
+lines(x=density(ljz_sqrt$Ca_exch))
+
+#Normalverteilung der Daten
+norm=rnorm(length(ljz_sqrt$Ca_exch), 
+           mean = mean(ljz_sqrt$Ca_exch), 
+           sd= sd(ljz_sqrt$Ca_exch))
+lines(x=density(norm, adjust = 2), lty = 2)
+
+#Standard-Normalverteilung
+xfit <- seq(min(ljz_sqrt$Ca_exch),
+            max(ljz_sqrt$Ca_exch),
+            length=length(ljz_sqrt$Ca_exch))
+yfit <- dnorm(xfit, 
+              mean=mean(ljz_sqrt$Ca_exch),
+              sd=sd(ljz_sqrt$Ca_exch))
+
+lines(xfit, yfit, col="red", lwd= 2, lty=2)
+legend(7, 0.35,
+       legend = c("Dichte-Funktion", "NV der Daten", "Standard-NV"),
+       col = c("black", "black", "red"),
+       lty = c(1,2,2))
 ```
 Der p-Wert ist nach wie vor <0,05, allerdings deutlich dichter dran als vor der Transformierung.
 Der W-Wert ist, wie auch schon vor der Transformierung, ideralerweise nahe 1.
-```{r}
-#hist(Ca_tr,
-#       main = "Histogramm der transformierten austauschbaren Ca-Ionen",
-#       ylab = "Häufigkeit",
-#       xlab = "Wurzel der beobachteten austauschbaren Ca-Ionen",
-#       density = TRUE)
 
-#x <- Ca_tr
- 
-#curve(dnorm(x, mean = mean(Ca_tr), sd = sd(Ca_tr)), add = TRUE, col = "red")
-
-
-#xfit <- seq(min(Ca_tr), max(Ca_tr))
-#yfit <- dnorm(xfit, mean = mean(Ca_tr), sd = sd(Ca_tr))
-#yfit <- yfit * diff(Ca_tr_hist$mids[1:2]) * length(Ca_tr)
-#lines(xfit, yfit, col = "blue", lwd = 2)
-
-#plot(Ca_tr_hist)
-#lines(Ca_tr_hist)
-```
 c) Beurteilen Sie abschließend in knappen Worten, ob die Transformation erfolgreich war, oder ob sich keine entscheidende Annäherung an eine Normalverteilung herstellen ließ.
-
 
 ## Aufgabe 11 Räumliche Daten in R
 a) Überführen Sie das Objekt ljz in eines der Klasse SpatialPointsDataFrame. Plotten Sie nun die Daten entsprechend ihrer geographischen Position. Beschriften Sie geschickt und fügen Sie ihrer Graphik ein rechtwinkliges Grid hinzu. Was lässt sich über das Sampling-Design sagen? Schätzen Sie die maximale Entfernung zweier Punkte im Untersuchungsgebiet ab.
@@ -88,7 +97,6 @@ SPDFljz <- SpatialPointsDataFrame(spatialCoords,
 grid <- gridlines(SPDFljz, 
                   easts = pretty(bbox(SPDFljz)[1,]), 
                   norths = pretty(bbox(SPDFljz)[2,]))
-                
 
 plot(SPDFljz,
      main = "Orte der Probenentnahme in Yingtan",
