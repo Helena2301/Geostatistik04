@@ -1,0 +1,117 @@
+---
+title: "Aufgabe o4"
+author: "Gruppe 01"
+date: "13 5 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Workspace}
+#Workspace laden
+load("data/yingtan_20_ueb3.RData")
+
+#Die folgenden Rechnungen beziehen sich auf die austauschbaren Ca-Ionen
+Ca <- ljz$Ca_exch
+```
+## Aufgabe 10
+a)Um den visuellen Eindruck aus Aufgabe 8b. mathematisch zu bestätigen, untersuchen Sie die Variable Ca_exch mit Hilfe eines gängigen Testverfahrens auf Normalverteilung.
+```{r Aufgabe 10a}
+#Test auf Normalverteilung mit dem Shaphiro-Wilk-Test
+shapiro.test(Ca)
+```
+Der p-Wert ist < 0,05. Das bedeutet, dass eine Normalverteilung der Messwerte der austauschbaren Ca-Ionen unwahrscheinlich ist.
+
+b) Führen Sie eine geeignete Transformation durch und plotten Sie das Dichte-Histogramm der transformierten Variablen. Wiederholen Sie den in 10a. verwendeten Test auf Normalverteilung und integrieren Sie die Testparameter ebenso in die Histogramm-Graphik wie die Kurve der zugehörigen Normalverteilung (curve und Normal). Wählen Sie eine gestrichelte Liniendarstellung doppelter Breite.
+```{r Aufgabe 10b}
+#Schiefe
+schiefe <- function(x) {
+  1/(length(x) * (sqrt(var(x))^3)) * sum((x-mean(x))^3)
+}
+
+schiefe(Ca)
+
+#Variable transformieren mittels Wurzel
+Ca_tr <- log(Ca)
+#Dichte-Histogramm
+hist(Ca_tr,
+     breaks = "FD")
+#Test auf Normalverteilung
+shapiro.test(Ca_tr)
+```
+Der p-Wert ist nach wie vor <0,05, allerdings deutlich dichter dran als vor der Transformierung.
+Der W-Wert ist, wie auch schon vor der Transformierung, ideralerweise nahe 1.
+```{r}
+#hist(Ca_tr,
+#       main = "Histogramm der transformierten austauschbaren Ca-Ionen",
+#       ylab = "Häufigkeit",
+#       xlab = "Wurzel der beobachteten austauschbaren Ca-Ionen",
+#       density = TRUE)
+
+#x <- Ca_tr
+ 
+#curve(dnorm(x, mean = mean(Ca_tr), sd = sd(Ca_tr)), add = TRUE, col = "red")
+
+
+#xfit <- seq(min(Ca_tr), max(Ca_tr))
+#yfit <- dnorm(xfit, mean = mean(Ca_tr), sd = sd(Ca_tr))
+#yfit <- yfit * diff(Ca_tr_hist$mids[1:2]) * length(Ca_tr)
+#lines(xfit, yfit, col = "blue", lwd = 2)
+
+#plot(Ca_tr_hist)
+#lines(Ca_tr_hist)
+```
+c) Beurteilen Sie abschließend in knappen Worten, ob die Transformation erfolgreich war, oder ob sich keine entscheidende Annäherung an eine Normalverteilung herstellen ließ.
+
+
+## Aufgabe 11 Räumliche Daten in R
+a) Überführen Sie das Objekt ljz in eines der Klasse SpatialPointsDataFrame. Plotten Sie nun die Daten entsprechend ihrer geographischen Position. Beschriften Sie geschickt und fügen Sie ihrer Graphik ein rechtwinkliges Grid hinzu. Was lässt sich über das Sampling-Design sagen? Schätzen Sie die maximale Entfernung zweier Punkte im Untersuchungsgebiet ab.
+```{r Aufgabe 11a}
+library(sp)
+
+#Spalten mit den Koordinaten selektieren
+spatialCoords <- dplyr::select(ljz, 
+                               long = EAST, 
+                               lat = NORTH)
+
+#Koordinatensystem definieren
+coordRefSys <- CRS("+proj=utm +zone=50 +ellps=WGS84")
+
+#SpatialPointsDataFrame erstellen
+SPDFljz <- SpatialPointsDataFrame(spatialCoords, 
+                                  ljz, 
+                                  proj4string = coordRefSys)
+
+#graphische Darstellung
+plot(SPDFljz,
+     main = "Orte der Probenentnahme in Yingtan",
+     axes = TRUE,
+     xlab = "EAST",
+     ylab = "NORTH")
+
+#Distanzen abschaetzen
+bbox(SPDFljz)
+```
+Größtenteils wurde die Fläche gleichmäßig beprobt. An einigen Stellen allerdings gar nicht und an anderen liegen die beprobten Stellen sehr nah bei einander. Die maximale Distanz der beprobten Stellen beträgt
+
+b) Verschaffen Sie sich anschließend einen Überblick über die Lage der Punkte indem Sie diese vor einem Satellitenbild plotten (mapview). Lassen sich durch das Satellitenbild weitere Äußerungen über das Sampling-Design treffen?
+Hinweis: Um das richtige Satellitenbild zu finden, muss dem Objekt ljz das richtige Koordinatensystem zugewiesen werden. Denken Sie dazu an die Objektbeschreibung in Übung 2.
+
+```{r Aufgabe 11b}
+library(mapview)
+print(mapview(SPDFljz))
+```
+Das Beprobungsgebiet wird offensichtlich von einer Autobahn oder größeren Straße durchquert. Einige Standorte der Probenentnahmestellen liegen sehr nah an der Fahrbahn. Das kann die chemische Zusammensetzung beeinflussen und so das Ergebnis für das Untersuchungsgebiet beeinflussen.
+
+c) Erstellen Sie mit Hilfe der Methode bubble einen Plot, der Ihnen zusätzlich zur geographischen Position jeweils die Größenordnung des Ca-Gehalts (untransformiert) vermittelt. Setzen Sie die maximale Kreisstärke auf 1 und sorgen Sie dafür, dass die Koordinatenachsen geplottet werden. Gehen Sie der Frage nach, ob ein regionaler Trend auszumachen ist. Liegen die Extremwerte konzentriert vor, oder verteilen sie sich auf das gesamte Einzugsgebiet?
+```{r Aufgabe 11c}
+bubble(SPDFljz, "Ca_exch",
+       main = "Austauschbare Ca-Ionen in Yingtan [µmol/g]", 
+       xlab = "EAST",
+       ylab = "NORTH",
+       scales = list(draw = TRUE),
+       maxsize = 1)
+```
+Die Proben, die nah an Bahngleisen entnommen wurden, weisen eine höhere Konzentration an austauschbaren Ca-Ionen auf. Darüber hinaus ist sie im Osten des Beprobungsgebiets etwas höher als im Westen. Ein klarer Unterschied in Nord-Süd-Richtung ist nicht zu erkennen.
