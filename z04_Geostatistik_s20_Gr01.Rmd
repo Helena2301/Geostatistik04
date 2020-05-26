@@ -112,7 +112,7 @@ plot(grid,
 
 #alternative graphische Darstellung mit lattice
 library(lattice)
-SPDFljzlayout <- list(grid, SPDFljz["SAMPLING"])
+SPDFljzlayout <- list(grid)
 spplot(SPDFljz["SAMPLING"],
        sp.layout = SPDFljzlayout,
        main = "Beprobungsorte in Yingtan",
