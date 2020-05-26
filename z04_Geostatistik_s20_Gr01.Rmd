@@ -110,6 +110,17 @@ plot(grid,
      col = "grey",
      add = TRUE)
 
+#alternative graphische Darstellung mit lattice
+library(lattice)
+SPDFljzlayout <- list(grid, SPDFljz["Ca_exch"])
+spplot(SPDFljz["Ca_exch"],
+       sp.layout = SPDFljzlayout,
+       main = "Beprobungsorte in Yingtan",
+       xlab = "EAST",
+       ylab = "NORTH",
+       scales = list(draw = TRUE),
+       key.space = "right")
+
 #Distanzen abschaetzen
 bbox(SPDFljz)
 
@@ -121,14 +132,14 @@ hist(ptsdist,
 max(ptsdist)
 ```
 Größtenteils wurde die Fläche gleichmäßig beprobt. An einigen Stellen allerdings gar nicht und an anderen liegen die beprobten Stellen sehr nah bei einander. Das Untersuchungsgebiet liegt zwischen 490441 und 492591 für die Rechtswerte und zwischen 3121290 und 3125630 für die Hochwerte.
-Die maximale Distanz der beprobten Stellen beträgt etwa 4400m.
+Die maximale Distanz zweier beprobten Stellen beträgt etwa 4400m.
 
 b) Verschaffen Sie sich anschließend einen Überblick über die Lage der Punkte indem Sie diese vor einem Satellitenbild plotten (mapview). Lassen sich durch das Satellitenbild weitere Äußerungen über das Sampling-Design treffen?
 Hinweis: Um das richtige Satellitenbild zu finden, muss dem Objekt ljz das richtige Koordinatensystem zugewiesen werden. Denken Sie dazu an die Objektbeschreibung in Übung 2.
 
 ```{r Aufgabe 11b}
 library(mapview)
-print(mapview(SPDFljz, map.type ="Esri.WorldImagery"))
+#mapview(SPDFljz, map.type ="Esri.WorldImagery")
 ```
 Das Beprobungsgebiet wird offensichtlich von einer Autobahn oder größeren Straße durchquert. Einige Standorte der Probenentnahmestellen liegen sehr nah an der Fahrbahn. Das kann die chemische Zusammensetzung beeinflussen und so das Ergebnis für das Untersuchungsgebiet beeinflussen. Lücken in den Beprobungsstellen sind durch Gewässer oder Siedlungen zu erklären. Neben dem regulären regelmäßigen Beprobungsmuster gibt es vier Bereiche, die entlang von Catenen intensiver beprobt wurden (s. Spalte SAMPLING). Hierbei ist nicht zu erkennen, ob diese speziellen "Areas-of-Interests" zufällig oder durch eine bestimmte Sampling-Strategie gewählt wurden.
 
