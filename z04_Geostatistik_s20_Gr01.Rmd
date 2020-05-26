@@ -85,7 +85,7 @@ spatialCoords <- dplyr::select(ljz,
                                long = EAST, 
                                lat = NORTH)
 
-#Koordinatensystem definieren
+#Koordinatensystem definieren (s. txt-Datei Datenbeschreibung)
 coordRefSys <- CRS("+proj=utm +zone=50 +ellps=WGS84")
 
 #SpatialPointsDataFrame erstellen
@@ -112,8 +112,8 @@ plot(grid,
 
 #alternative graphische Darstellung mit lattice
 library(lattice)
-SPDFljzlayout <- list(grid, SPDFljz["Ca_exch"])
-spplot(SPDFljz["Ca_exch"],
+SPDFljzlayout <- list(grid, SPDFljz["SAMPLING"])
+spplot(SPDFljz["SAMPLING"],
        sp.layout = SPDFljzlayout,
        main = "Beprobungsorte in Yingtan",
        xlab = "EAST",
